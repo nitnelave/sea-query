@@ -24,6 +24,16 @@ where
         match token {
             Token::Punctuation(mark) => {
                 if (mark.as_ref(), false) == query_builder.placeholder() {
+                    if mark == "?" && i + 1 < tokens.len() {
+                        if let Token::Punctuation(mark) = &tokens[i + 1] {
+                            // escape '??'
+                            if mark == "?" {
+                                output.push(mark.to_string());
+                                i += 1;
+                                continue;
+                            }
+                        }
+                    }
                     output.push(query_builder.value_to_string(&params[counter]));
                     counter += 1;
                     i += 1;
